@@ -1,5 +1,5 @@
 const App = () => {
-  return <>001</>
+  return <>Testing useEffect...</>
 }
 
 export default App
