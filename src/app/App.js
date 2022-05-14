@@ -1,56 +1,27 @@
 import { lazy, Suspense, useState } from 'react'
+import { getAllFolders, getAllTags, getByTags } from './data'
 
-const bites = [
-  { id: 1, folderName: 'Testing useEffect' },
-  { id: 2, folderName: 'useRef' },
-  { id: 3, folderName: 'TDD' },
-]
+// Import all bites sub folders
+const bitesFolders = getAllFolders()
+const biteComponents = bitesFolders.map((biteFolder) => lazy(() => import(`../bites/${biteFolder.folderName}`)))
 
-// Import all bites
-const biteComponents = bites.map((bite) => lazy(() => import(`../bites/${bite.folderName}`)))
-
-// Tags
-const tags = [
-  { name: 'React', bites: [1, 2] },
-  { name: 'Testing Library', bites: [1] },
-  { name: 'Testing', bites: [1, 3] },
-]
-
-const initialFilter = {
-  filterActive: false,
-  tags: tags.map((tag) => {
-    return {
-      ...tag,
-      selected: false,
-    }
-  }),
-}
+const tags = getAllTags()
 
 const App = () => {
   const [index, setIndex] = useState(0)
-  const [filter, setFilter] = useState(initialFilter)
+  const [filter, setFilter] = useState({ filterActive: false, selectedTags: [] })
 
   const toggleSelectTag = (tagName) => {
-    const updatedTags = filter.tags.map((tag) => {
-      if (tag.name === tagName) tag.selected = !tag.selected
-      return tag
-    })
-    setFilter((filter) => ({ ...filter, filterActive: updatedTags.some((t) => t.selected), tags: updatedTags }))
+    const selectedTags = filter.selectedTags.includes(tagName)
+      ? filter.selectedTags.filter((tag) => tag !== tagName)
+      : [...filter.selectedTags, tagName]
+
+    setFilter((filter) => ({ ...filter, filterActive: selectedTags.length > 0, selectedTags }))
   }
 
-  const filteredBiteIds = [
-    ...new Set(
-      filter.tags
-        .filter((tag) => tag.selected)
-        .reduce((acc, tag) => {
-          return acc.concat(tag.bites)
-        }, []),
-    ),
-  ]
+  const filteredBites = filter.filterActive ? getByTags(filter.selectedTags) : bitesFolders
 
-  const filteredBites = filter.filterActive ? bites.filter(({ id }) => filteredBiteIds.includes(id)) : bites
-
-  const ChosenBite = biteComponents[index]
+  const SelectedBiteComponent = biteComponents[index]
 
   return (
     <>
@@ -59,9 +30,9 @@ const App = () => {
       <h1>Bites 😋</h1>
       <div>
         Tags:{' '}
-        {filter.tags.map((tag) => (
-          <button key={tag.name} onClick={() => toggleSelectTag(tag.name)} style={{ margin: '5px' }}>
-            {tag.name} {tag.selected && '✅'}
+        {tags.map((tag) => (
+          <button key={tag} onClick={() => toggleSelectTag(tag)} style={{ margin: '5px' }}>
+            {tag} {filter.selectedTags.includes(tag) ? '✅' : null}
           </button>
         ))}
       </div>
@@ -73,7 +44,8 @@ const App = () => {
             onClick={() => setIndex(i)}
             style={{
               margin: '5px',
-              border: index === bites.findIndex((bite) => bite.id === x.id) ? '2px solid orange' : '1px solid gray',
+              border:
+                index === bitesFolders.findIndex((bite) => bite.id === x.id) ? '2px solid orange' : '1px solid gray',
             }}
           >
             {x.folderName}
@@ -82,7 +54,7 @@ const App = () => {
       </div>
       <div style={{ border: '1px solid lightgray', padding: '3px' }}>
         <Suspense fallback={<div>Loading...</div>}>
-          <ChosenBite />
+          <SelectedBiteComponent />
         </Suspense>
       </div>
     </>
