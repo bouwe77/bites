@@ -56,8 +56,6 @@ const App = () => {
     <>
       TO DO Reset index indien huidige index niet in huidige filter voorkomt...
       <br />
-      TO DO Vervang vinkje achter folder door een andere actieve useState
-      <br />
       <h1>Bites 😋</h1>
       <div>
         Tags:{' '}
@@ -70,8 +68,15 @@ const App = () => {
       <div style={{ margin: '20px 0' }}>
         Grab a bite:
         {filteredBites.map((x, i) => (
-          <button key={i} onClick={() => setIndex(i)} style={{ margin: '5px' }}>
-            {x.folderName} {index === bites.findIndex((bite) => bite.id === x.id) && '✅'}
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            style={{
+              margin: '5px',
+              border: index === bites.findIndex((bite) => bite.id === x.id) ? '2px solid orange' : '1px solid gray',
+            }}
+          >
+            {x.folderName}
           </button>
         ))}
       </div>
