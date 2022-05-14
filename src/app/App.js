@@ -7,7 +7,7 @@ const bites = [
 ]
 
 // Import all bites
-const biteComponents = bites.map((bite) => lazy(() => import(`./bites/${bite.folderName}`)))
+const biteComponents = bites.map((bite) => lazy(() => import(`../bites/${bite.folderName}`)))
 
 // Tags
 const tags = [
