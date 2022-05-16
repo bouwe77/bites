@@ -1,7 +1,6 @@
 const bitesFolders = [
-  { id: 1, folderName: 'Testing useEffect', tags: ['React', 'Testing', 'Testing Library'] },
-  { id: 2, folderName: 'useRef', tags: ['React'] },
-  { id: 3, folderName: 'TDD', tags: ['Testing'] },
+  { id: 1, folderName: 'state updater', tags: ['React'] },
+  { id: 2, folderName: 'derived state', tags: ['React'] },
 ]
 
 export const getAllFolders = () => {
