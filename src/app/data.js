@@ -1,6 +1,7 @@
 const bitesFolders = [
   { id: 1, folderName: 'state updater', tags: ['React'] },
   { id: 2, folderName: 'derived state', tags: ['React'] },
+  { id: 3, folderName: 'XState coffee machine', tags: ['React','XState'] },
 ]
 
 export const getAllFolders = () => {
